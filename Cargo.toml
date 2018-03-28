@@ -1,0 +1,10 @@
+[package]
+name = "gitio"
+version = "0.1.0"
+authors = ["Kyle Clemens <git@kyleclemens.com>"]
+
+[dependencies]
+structopt = "0.2"
+reqwest = "0.8"
+url = "1.7"
+failure = "0.1"
