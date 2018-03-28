@@ -12,21 +12,6 @@ use std::str::FromStr;
 
 type Result<T> = std::result::Result<T, failure::Error>;
 
-fn main() -> Result<()> {
-  let cli = Cli::from_args();
-
-  let url = match cli.url {
-    Some(u) => u,
-    None => stdin_url()?
-  };
-
-  let location = gitio::shorten(&url, cli.key)?;
-
-  println!("{}", location);
-
-  Ok(())
-}
-
 #[derive(StructOpt)]
 struct Cli {
   #[structopt(
@@ -47,4 +32,19 @@ fn stdin_url() -> Result<Url> {
   io::stdin().read_to_string(&mut content)?;
   let url = Url::from_str(&content)?;
   Ok(url)
+}
+
+fn main() -> Result<()> {
+  let cli = Cli::from_args();
+
+  let url = match cli.url {
+    Some(u) => u,
+    None => stdin_url()?
+  };
+
+  let location = gitio::shorten(&url, cli.key)?;
+
+  println!("{}", location);
+
+  Ok(())
 }
