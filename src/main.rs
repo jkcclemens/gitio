@@ -32,14 +32,14 @@ struct Cli {
   #[structopt(
     short = "k",
     long = "key",
-    help = "key to attempt to use instead of a randomly-generated one"
+    help = "key to attempt to use instead of a randomly-generated one",
   )]
   key: Option<String>,
   #[structopt(
     help = "the url to shorten",
-    parse(try_from_str)
+    parse(try_from_str),
   )]
-  url: Option<Url>
+  url: Option<Url>,
 }
 
 fn stdin_url() -> Result<Url> {
