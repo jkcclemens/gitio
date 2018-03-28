@@ -1,3 +1,5 @@
+#![feature(process_exitcode_placeholder)]
+
 extern crate gitio;
 #[macro_use]
 extern crate structopt;
@@ -8,6 +10,7 @@ use structopt::StructOpt;
 use url::Url;
 
 use std::io::{self, Read};
+use std::process::ExitCode;
 use std::str::FromStr;
 
 type Result<T> = std::result::Result<T, failure::Error>;
@@ -34,7 +37,16 @@ fn stdin_url() -> Result<Url> {
   Ok(url)
 }
 
-fn main() -> Result<()> {
+fn main() -> ExitCode {
+  if let Err(e) = inner() {
+    eprintln!("{}", e);
+    return ExitCode::FAILURE;
+  }
+
+  ExitCode::SUCCESS
+}
+
+fn inner() -> Result<()> {
   let cli = Cli::from_args();
 
   let url = match cli.url {
