@@ -10,12 +10,21 @@ use reqwest::header::Location;
 use structopt::StructOpt;
 use url::Url;
 
-fn main() -> Result<(), failure::Error> {
+use std::io::{self, Read};
+use std::str::FromStr;
+
+type Result<T> = std::result::Result<T, failure::Error>;
+
+fn main() -> Result<()> {
   let cli = Cli::from_args();
   let client = Client::new();
   let mut builder = client.post("https://git.io");
   let mut options = Vec::with_capacity(2);
-  options.push(("url", cli.url.into_string()));
+  let url = match cli.url {
+    Some(u) => u,
+    None => stdin_url()?
+  };
+  options.push(("url", url.into_string()));
   if let Some(key) = cli.key {
     options.push(("code", key));
   }
@@ -44,5 +53,12 @@ struct Cli {
     help = "the url to shorten",
     parse(try_from_str)
   )]
-  url: Url
+  url: Option<Url>
+}
+
+fn stdin_url() -> Result<Url> {
+  let mut content = String::new();
+  io::stdin().read_to_string(&mut content)?;
+  let url = Url::from_str(&content)?;
+  Ok(url)
 }
